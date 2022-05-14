@@ -1,41 +1,37 @@
-bool dfs (string str , int idx , int prev , int &missing){
-    
-    if (idx >= str.length()){
-        if (missing > 0)
-            return true;
+class Solution {
+public:
+    int di[4] = {1,0,-1,0} ,
+        dj[4] = {0,1,0,-1};
+    bool dfs (vector<vector<char>> &board , string &s , int idx , int i , int j){
+        
+        if (idx == s.length()) return true;
+        for (int dir = 0 ; dir < 4 ; ++dir){
+            int ni = i + di[dir] , nj = j + dj[dir];
+            if (ni >= 0 and ni < board.size() and nj >= 0 and nj < board[0].size()
+            and board[ni][nj] == s[idx]){
+                char prev = board[ni][nj];
+                board[ni][nj] = '-';
+                if (dfs (board , s , idx+1 , ni , nj)) return true;
+                board[ni][nj] = prev;
+            }
+        }
+        
         return false;
     }
-    for (int len = 1 ; len <= 6 and idx + len <= str.length() ; ++len){
-        string next = str.substr(idx ,len);
-        int can = stoi(next);
-        if (can == prev + 1){
-            if (dfs(str , idx + len , can , missing))
-                return true;
-        }
-        else if (can == prev + 2){
-            if (missing == -1){
-                missing = prev+1;
-                if (dfs (str, idx + len , can , missing))
-                    return true;
-            }
-            else return false;
-        }
-        else if (can > prev + 2)
-            return false;
-    }
-    
-    return false;
-    
-}
-int missingNumber(const string& str)
-{
-    // Code here
-    for (int len = 1 ; len <= 6 and len <= str.length() ; ++len){
-        string next = str.substr(0 , len);
-        int can = stoi(next);
-        int missing = -1;
-        if(dfs (str , len , can , missing)) return missing;
+    bool isWordExist(vector<vector<char>>& board, string s) {
+        // Code here
         
+        for (int i = 0 ; i < board.size() ; ++i){
+            for (int j = 0 ; j < board[0].size() ; ++j){
+                if (board[i][j] == s[0]){
+                    char prev = board[i][j];
+                    board[i][j] = '-';
+                    if (dfs (board , s , 1 , i , j)) return true;
+                    board[i][j] = prev;
+                }
+            }
+        }
+        
+        return false;
     }
-    return -1;
-}
+};
